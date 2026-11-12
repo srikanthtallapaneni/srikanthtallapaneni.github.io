@@ -1,0 +1,10 @@
+// Cloudflare Workers config: serves the built site (the build/ folder) as static assets.
+// Cloudflare build settings: build command `npm run build`, deploy command `npx wrangler deploy`.
+{
+  "name": "srikanthchowdaritallapaneni",
+  "compatibility_date": "2025-09-27",
+  "assets": {
+    "directory": "./build",
+    "not_found_handling": "single-page-application"
+  }
+}

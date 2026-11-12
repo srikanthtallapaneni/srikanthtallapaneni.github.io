@@ -171,17 +171,23 @@ h3 { font-family: var(--display); font-weight: 600; font-size: 24px; line-height
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1000px) {
-  .tile-intro, .tile-photo { grid-column: 1 / -1; }
-  .tile-intro { min-height: 0; }
-  .tile-intro-body { padding-top: 120px; }
-  .tile-photo { min-height: 0; aspect-ratio: 4 / 3; }
-  .tile-photo img { object-position: 50% 14%; }
+  /* Tablet: keep headline and portrait side by side so the photo stays a portrait crop */
+  .tile-intro { grid-column: span 7; min-height: 500px; }
+  .tile-photo { grid-column: span 5; min-height: 500px; }
+  .tile-intro-body { padding: 32px; }
+  .tile-photo figcaption { justify-content: center; border-radius: 18px; }
   .tile-stat { grid-column: span 6; }
   .spotlight-card.project { grid-template-columns: 1fr; gap: 18px; }
   .project-side { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
   .project-num { margin: 0; }
   .stack-row { grid-template-columns: 1fr; gap: 10px; }
   .role { grid-template-columns: 1fr; gap: 22px; }
+}
+@media (max-width: 720px) {
+  .tile-intro, .tile-photo { grid-column: 1 / -1; min-height: 0; }
+  .tile-intro-body { padding-top: 110px; }
+  .tile-photo { height: min(120vw, 560px); }
+  .tile-photo img { object-position: 50% 18%; }
 }
 @media (max-width: 640px) {
   .wrap { padding-inline: 12px; }
@@ -191,7 +197,6 @@ h3 { font-family: var(--display); font-weight: 600; font-size: 24px; line-height
   .nav-links a { padding: 8px 7px; font-size: 12.5px; }
   .nav-cta { padding: 8px 11px; font-size: 12.5px; }
   .tile-intro-body { padding: 96px 22px 24px; }
-  .tile-photo { aspect-ratio: 4 / 5; }
   .tile-stat { padding: 18px; min-height: 140px; }
   .spotlight-card.project, .role { padding: 24px 22px; }
   .about-rest, .facts { grid-template-columns: 1fr; }
