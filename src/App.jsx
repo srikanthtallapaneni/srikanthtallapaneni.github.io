@@ -1,230 +1,303 @@
-import { useState, useEffect } from 'react'
-import './App.css'
+import { useEffect } from 'react';
+import content from './content.js';
 
-const THEME_KEY = 'portfolio-theme'
+// Animated components from React Bits (https://reactbits.dev)
+import Aurora from './reactbits/Aurora.jsx';
+import BlurText from './reactbits/BlurText.jsx';
+import ShinyText from './reactbits/ShinyText.jsx';
+import CountUp from './reactbits/CountUp.jsx';
+import Magnet from './reactbits/Magnet.jsx';
+import ScrollVelocity from './reactbits/ScrollVelocity.jsx';
+import SpotlightCard from './reactbits/SpotlightCard.jsx';
+import AnimatedContent from './reactbits/AnimatedContent.jsx';
+import ScrollReveal from './reactbits/ScrollReveal.jsx';
 
-function getInitialTheme() {
-  const stored = localStorage.getItem(THEME_KEY)
-  if (stored === 'light' || stored === 'dark') return stored
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-}
+const ACCENT = '#c9f26c';
 
-const NAV_SECTIONS = [
-  { id: 'about', label: 'About' },
-  { id: 'education', label: 'Education' },
-  { id: 'experience', label: 'Experience' },
-  { id: 'projects', label: 'Projects' },
-  { id: 'skills', label: 'Skills' },
-]
-
-const resume = {
-  name: 'Srikanth Chowdari Tallapaneni',
-  about: 'Software Engineer with experience in full-stack development, cloud platforms, and building scalable applications. Focused on clean code, system reliability, and continuous improvement.',
-  resumePdfUrl: '/resume.pdf',
-  contact: {
-    phone: '(+91) 9849625597',
-    address: '14-2-30/4, Kandukur, Andhra Pradesh, India 523105',
-    email: 'srikanthchowdaritallapaneni@gmail.com',
-    linkedin: 'https://www.linkedin.com/in/srikanthchowdaritallapaneni/',
-  },
-  education: {
-    institution: 'Andhra University (Visakhapatnam, Andhra Pradesh - India)',
-    period: 'Aug 2016 - Apr 2020',
-    degree: 'Bachelor of Technology - Computer Science and Engineering',
-  },
-  experience: [
-    {
-      role: 'Software Engineer',
-      company: 'IBM',
-      location: 'India',
-      period: 'Nov 2023 - Till Date',
-      bullets: [
-        'Defined an error framework for better logging of errors in the overall application making it quick and easier to debug issues.',
-        'Made use of MDC and ThreadContextMapFilter to segregate logs in a better way for understanding the flow of the application and identify the failures quickly.',
-        'Utilized AWS S3 Cloud Object Storage to ingest and retrieve COG files, enabling real-time processing and API-based streaming of Geospatial data.',
-        'Implemented Disaster Recovery (DR) solutions by designing and addressing various failure scenarios, enhancing system availability and resilience.',
-        "Open-source contributor to IBM's Environmental-Intelligence GitHub project, showcasing the capabilities of IBM EI.",
-        'Implemented caching mechanism by making use of ibmcloud which resulted in reduction of query time by more than 90% without increasing costs.',
-      ],
-    },
-    {
-      role: 'Software Engineer',
-      company: 'CGI Information Systems and Management',
-      location: 'India',
-      period: 'Oct 2022 - Nov 2023',
-      bullets: [
-        'Orchestrated the creation of libraries and their deployment in a private NPM Registry, optimizing code re-usability and fostering a collaborative development environment; engineered Micro-Frontend web components with Angular elements, incorporating dynamic input fields and tailored validation through Reactive forms.',
-        'Implemented real-time WebSocket communication and localization for languages such as English, Spanish, etc.',
-        'Revamped REST API performance by implementing Hazelcast caching mechanism, resulting in an impressive 40% reduction in response time, enhancing user experience and overall system efficiency.',
-        'Implemented thread pools to call REST APIs via services, slashing feature duration from 2 minutes to a mere 6 seconds, improving response time.',
-        'Engaged in code reviews, reinforcing best practices and improving code quality, resulting in a 20% reduction in post-deployment issues.',
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: 'Outage Prediction - IBM (ISL)',
-      url: 'https://www.ibm.com/docs/en/environmental-intel-suite?topic=solutions-outage-prediction',
-      period: 'May 2025 - till date',
-      tech: 'React, NodeJS, PostgreSQL, AWX, Grafana',
-      description: 'Outage Prediction provides a central place to view expected service outages and the types of outages within a defined service territory. These predictions help assess the impact of both weather and climate change on a utility system and help to determine the correct response to mitigate the impact.',
-    },
-    {
-      name: 'Environmental Intelligence - IBM (ISL)',
-      url: 'https://www.ibm.com/products/environmental-intelligence',
-      period: 'Nov 2023 - May 2025',
-      tech: 'Springboot, MySQL, Postgres, MongoDB, IBMCloud, AWS',
-      description: "IBM Environmental Intelligence Suite is a SaaS platform to monitor, predict, and respond to weather and climate impact. It includes dashboards, alerts and notifications, Geospatial and weather data APIs, and add-ons with industry-specific environmental models for business resilience and optimization. It combines accurate weather, Geospatial, Greenhouse Gas (GHG) emissions and industry-specific data so you can build custom climate adaptation solutions that fit the needs of your enterprise.",
-    },
-    {
-      name: 'CACS - Computer Assisted Collection System - CGI',
-      url: 'https://www.cgi.com/au/en-au/solutions/banking-capital-markets/cacs-x-collections',
-      period: 'Dec 2020 - Nov 2023',
-      tech: 'Angular, Springboot, Kafka, Camunda, Keycloak, MySQL',
-      description: "CACS is SaaS offering which offers a fully-integrated, end-to-end default management solution that empowers lenders to navigate cost pressures, streamline third-party integration, adapt to dynamic compliance requirements, and replace outdated processes and technologies. In simpler terms, it provides the lenders with the capabilities of managing defaulted accounts throughout the collection life cycle.",
-    },
-  ],
-  skills: {
-    languages: 'Java, Python, C, SQL, HTML, CSS, TypeScript',
-    frameworksTools: 'Angular, Angular Material, Web Accessibility, WebSockets, Micro Front End, Springboot, Kubernetes, Docker, Git, Jira, Source Tree, debugging, VS Code, Spring Tool Suite',
-  },
-}
-
-function scrollToSection(id) {
-  const el = document.getElementById(id)
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-}
-
-function App() {
-  const [theme, setTheme] = useState(getInitialTheme)
-  const [showBackToTop, setShowBackToTop] = useState(false)
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-    localStorage.setItem(THEME_KEY, theme)
-  }, [theme])
-
-  useEffect(() => {
-    const onScroll = () => setShowBackToTop(window.scrollY > 400)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  const isDark = theme === 'dark'
-
+function Reveal({ children, delay = 0, className }) {
   return (
-    <div className="portfolio">
-      <nav className="sticky-nav" aria-label="Page sections">
-        <div className="sticky-nav-links">
-          {NAV_SECTIONS.map(({ id, label }) => (
-            <a key={id} href={`#${id}`} className="sticky-nav-link" onClick={(e) => { e.preventDefault(); scrollToSection(id) }}>
-              {label}
-            </a>
-          ))}
-        </div>
-        <div className="sticky-nav-actions">
-          <a href={resume.resumePdfUrl} download="Srikanth_Tallapaneni_Resume.pdf" className="nav-download-btn" title="Download resume (PDF)">
-            Download resume
-          </a>
-          <button
-            type="button"
-            className="theme-toggle-btn"
-            onClick={() => setTheme(isDark ? 'light' : 'dark')}
-            title={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
-            aria-label="Toggle dark mode"
-          >
-            <span className="theme-toggle-icon" aria-hidden>{isDark ? '☀️' : '🌙'}</span>
-            <span className="theme-toggle-label">{isDark ? 'Light' : 'Dark'}</span>
-          </button>
-        </div>
-      </nav>
-
-      <header className="header" id="about">
-        <h1 className="name">{resume.name}</h1>
-        <p className="about-intro">{resume.about}</p>
-        <div className="contact">
-          <span>{resume.contact.phone}</span>
-          <span className="separator">•</span>
-          <span>{resume.contact.address}</span>
-          <span className="separator">•</span>
-          <a href={`mailto:${resume.contact.email}`}>{resume.contact.email}</a>
-        </div>
-        <a href={resume.contact.linkedin} target="_blank" rel="noopener noreferrer" className="linkedin">
-          {resume.contact.linkedin.replace('https://', '')}
-        </a>
-      </header>
-
-      <section className="section" id="education">
-        <h2 className="section-title">Education</h2>
-        <div className="education-block">
-          <div className="section-row">
-            <span className="institution">{resume.education.institution}</span>
-            <span className="period">{resume.education.period}</span>
-          </div>
-          <p className="degree">{resume.education.degree}</p>
-        </div>
-      </section>
-
-      <section className="section" id="experience">
-        <h2 className="section-title">Experience</h2>
-        {resume.experience.map((job, i) => (
-          <div key={i} className="experience-block">
-            <div className="section-row">
-              <span className="role-company">{job.role}, {job.company}, {job.location}</span>
-              <span className="period">{job.period}</span>
-            </div>
-            <ul className="bullets">
-              {job.bullets.map((bullet, j) => (
-                <li key={j}>{bullet}</li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </section>
-
-      <section className="section" id="projects">
-        <h2 className="section-title">Projects</h2>
-        {resume.projects.map((project, i) => (
-          <div key={i} className="project-block">
-            <div className="section-row">
-              <span className="project-name">
-                {project.url ? (
-                  <a href={project.url} target="_blank" rel="noopener noreferrer" className="project-link">
-                    {project.name}
-                  </a>
-                ) : (
-                  project.name
-                )}
-              </span>
-              <span className="period">{project.period}</span>
-            </div>
-            <p className="tech-stack">{project.tech}</p>
-            <ul className="bullets">
-              <li>{project.description}</li>
-            </ul>
-          </div>
-        ))}
-      </section>
-
-      <section className="section" id="skills">
-        <h2 className="section-title">Skills</h2>
-        <div className="skills-block">
-          <p><strong>Languages:</strong> {resume.skills.languages}</p>
-          <p><strong>Frameworks/Tools:</strong> {resume.skills.frameworksTools}</p>
-        </div>
-      </section>
-
-      <button
-        type="button"
-        className={`back-to-top ${showBackToTop ? 'back-to-top-visible' : ''}`}
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        aria-label="Back to top"
-        title="Back to top"
-      >
-        ↑
-      </button>
-    </div>
-  )
+    <AnimatedContent distance={36} duration={0.7} delay={delay} threshold={0.12} className={className}>
+      {children}
+    </AnimatedContent>
+  );
 }
 
-export default App
+function Ext({ href, className, children }) {
+  return (
+    <a href={href} className={className} target="_blank" rel="noopener noreferrer">
+      {children} <span aria-hidden="true">↗</span>
+    </a>
+  );
+}
+
+function Chips({ items, tone }) {
+  return (
+    <ul className={`chips ${tone || ''}`}>
+      {items.map(t => <li key={t}>{t}</li>)}
+    </ul>
+  );
+}
+
+function Heading({ s, id }) {
+  return (
+    <Reveal className="heading">
+      <p className="kicker">{s.eyebrow}</p>
+      <h2 id={id}>
+        {s.heading} <em>{s.headingAccent}</em>
+      </h2>
+      {s.lead && <p className="lead">{s.lead}</p>}
+    </Reveal>
+  );
+}
+
+function Nav() {
+  const { meta } = content;
+  return (
+    <header className="nav-wrap">
+      <nav className="nav" aria-label="Primary">
+        <a className="mono" href="#top" aria-label={`${meta.shortName} — home`}>st</a>
+        <div className="nav-links">
+          <a href="#work">Work</a>
+          <a href="#about">About</a>
+          <a href="#stack">Stack</a>
+          <a href="#journey">Journey</a>
+        </div>
+        <a className="nav-cta" href="#contact">Say hello</a>
+      </nav>
+    </header>
+  );
+}
+
+function Hero() {
+  const { hero, links, meta, stats } = content;
+  return (
+    <section className="hero wrap" id="top">
+      <div className="bento">
+        <div className="tile tile-intro">
+          <div className="aurora" aria-hidden="true">
+            <Aurora colorStops={['#3f6b2a', ACCENT, '#1f6f6a']} amplitude={0.9} blend={0.6} speed={0.6} mouseInteraction={false} />
+          </div>
+          <div className="tile-intro-body">
+            <p className="label">
+              <ShinyText text={hero.label} color="#a9a69b" shineColor="#ffffff" speed={3} />
+            </p>
+            <h1 className="sr-only">{hero.headline} {hero.headlineAccent}</h1>
+            <div className="headline" aria-hidden="true">
+              <BlurText text={hero.headline} delay={90} animateBy="words" direction="bottom" className="headline-line" />
+              <BlurText text={hero.headlineAccent} delay={90} animateBy="words" direction="bottom" className="headline-line headline-accent" />
+            </div>
+            <p className="intro">{hero.intro}</p>
+            <div className="actions">
+              <Magnet padding={50} magnetStrength={6}>
+                <a className="btn btn-accent" href="#work">See my work <span aria-hidden="true">↓</span></a>
+              </Magnet>
+              {links.resume && <Ext href={links.resume} className="btn">Resume</Ext>}
+              {links.linkedin && <Ext href={links.linkedin} className="btn">LinkedIn</Ext>}
+              {links.github && <Ext href={links.github} className="btn">GitHub</Ext>}
+            </div>
+          </div>
+        </div>
+
+        {hero.photo && (
+          <figure className="tile tile-photo">
+            <img src={hero.photo.src} alt={hero.photo.alt} width="1024" height="1536" />
+            <figcaption>
+              <span className="status"><i aria-hidden="true" />{hero.status}</span>
+              <span>{meta.location}</span>
+            </figcaption>
+          </figure>
+        )}
+
+        {stats.map(s => (
+          <div className="tile tile-stat" key={s.label}>
+            <p className="stat-value">
+              <CountUp to={s.value} separator="," duration={1.6} suffix={s.suffix} />
+            </p>
+            <p className="stat-label">{s.label}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Marquee() {
+  const groups = content.skills.groups;
+  const half = Math.ceil(groups.length / 2);
+  const row = gs => gs.flatMap(g => g.items).join('  ✦  ') + '  ✦  ';
+  return (
+    <div className="marquee" aria-hidden="true">
+      <ScrollVelocity texts={[row(groups.slice(0, half)), row(groups.slice(half))]} velocity={40} numCopies={3} className="marquee-text" />
+    </div>
+  );
+}
+
+function Work() {
+  const { work } = content;
+  return (
+    <section className="section wrap" id="work" aria-labelledby="work-title">
+      <Heading s={work} id="work-title" />
+      <div className="projects">
+        {work.items.map((p, i) => (
+          <Reveal key={p.name}>
+            <SpotlightCard className="project" spotlightColor="rgba(201, 242, 108, 0.22)">
+              <div className="project-side">
+                <span className="project-num">{String(i + 1).padStart(2, '0')}</span>
+                <span>{p.org}</span>
+                <span>{p.period}</span>
+              </div>
+              <div className="project-main">
+                <p className="kicker">{p.tag}</p>
+                <h3>{p.name}</h3>
+                <p className="body">{p.summary}</p>
+              </div>
+              <div className="project-meta">
+                <Chips items={p.stack} />
+                {p.link && <Ext href={p.link} className="link">{p.linkLabel || 'Learn more'}</Ext>}
+              </div>
+            </SpotlightCard>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function About() {
+  const { about } = content;
+  const [first, ...rest] = about.paragraphs;
+  return (
+    <section className="section wrap" id="about" aria-labelledby="about-title">
+      <Heading s={about} id="about-title" />
+      <ScrollReveal baseOpacity={0.15} enableBlur baseRotation={0} blurStrength={4} containerClassName="about-lede" textClassName="about-lede-text">
+        {first}
+      </ScrollReveal>
+      <Reveal className="about-rest">
+        {rest.map(p => <p key={p}>{p}</p>)}
+        <dl className="facts">
+          {about.facts.map(f => (
+            <div key={f.label}>
+              <dt>{f.label}</dt>
+              <dd>{f.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </Reveal>
+    </section>
+  );
+}
+
+function Stack() {
+  const { skills } = content;
+  return (
+    <section className="section wrap" id="stack" aria-labelledby="stack-title">
+      <Heading s={skills} id="stack-title" />
+      <div className="stack-table">
+        {skills.groups.map((g, i) => (
+          <Reveal key={g.name} delay={i * 0.04}>
+            <div className="stack-row">
+              <h3>{g.name}</h3>
+              <p className="body">{g.blurb}</p>
+              <Chips items={g.items} />
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Journey() {
+  const { experience } = content;
+  const ed = experience.education;
+  return (
+    <section className="section wrap" id="journey" aria-labelledby="journey-title">
+      <Heading s={experience} id="journey-title" />
+      <div className="roles">
+        {experience.roles.map(r => (
+          <Reveal key={r.company}>
+            <article className="role">
+              <div className="role-side">
+                <h3>{r.company}</h3>
+                <p>{r.start} — {r.end}</p>
+                {r.current && <span className="status"><i aria-hidden="true" />Current</span>}
+              </div>
+              <div className="role-main">
+                <p className="role-title">{r.title} <span>· {r.location}</span></p>
+                <p className="body">{r.context}</p>
+                <ul className="bullets">
+                  {r.bullets.map(b => <li key={b}>{b}</li>)}
+                </ul>
+                <Chips items={r.impact} tone="accent" />
+                <Chips items={r.stack} />
+                {r.link && <Ext href={r.link.url} className="link">{r.link.label}</Ext>}
+              </div>
+            </article>
+          </Reveal>
+        ))}
+        <Reveal>
+          <article className="role">
+            <div className="role-side">
+              <h3>Education</h3>
+              <p>{ed.start} — {ed.end}</p>
+            </div>
+            <div className="role-main">
+              <p className="role-title">{ed.degree} <span>· {ed.field}</span></p>
+              <p className="body">{ed.school} · {ed.location}</p>
+            </div>
+          </article>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+function Contact() {
+  const { contact, links, meta } = content;
+  return (
+    <section className="contact wrap" id="contact" aria-labelledby="contact-title">
+      <Reveal className="contact-card">
+        <h2 id="contact-title">
+          {contact.heading}{' '}
+          <em><ShinyText text={contact.headingAccent} color={ACCENT} shineColor="#ffffff" speed={2.5} /></em>
+        </h2>
+        <p className="lead">{contact.lead}</p>
+        <div className="actions">
+          {links.linkedin && (
+            <Magnet padding={60} magnetStrength={5}>
+              <Ext href={links.linkedin} className="btn btn-accent">Connect on LinkedIn</Ext>
+            </Magnet>
+          )}
+          {links.email && <a className="btn" href={`mailto:${links.email}`}>Email me</a>}
+          {links.github && <Ext href={links.github} className="btn">GitHub</Ext>}
+          {links.resume && <Ext href={links.resume} className="btn">Resume</Ext>}
+        </div>
+      </Reveal>
+      <footer className="footer">
+        <span>© {new Date().getFullYear()} {meta.name}</span>
+        <a href="#top">Back to top ↑</a>
+      </footer>
+    </section>
+  );
+}
+
+export default function App() {
+  useEffect(() => {
+    document.title = content.meta.title;
+  }, []);
+  return (
+    <>
+      <a className="skip" href="#main">Skip to content</a>
+      <Nav />
+      <main id="main">
+        <Hero />
+        <Marquee />
+        <Work />
+        <About />
+        <Stack />
+        <Journey />
+        <Contact />
+      </main>
+    </>
+  );
+}
