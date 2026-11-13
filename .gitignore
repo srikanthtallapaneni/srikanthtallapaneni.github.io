@@ -4,3 +4,4 @@ build
 .claude
 .wrangler
 .dev.vars*
+.admin-key

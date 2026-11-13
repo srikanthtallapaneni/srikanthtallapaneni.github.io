@@ -1,4 +1,8 @@
-name: Deploy to GitHub Pages
+name: Deploy to Cloudflare Pages
+
+# Builds the site and deploys it, with the functions/ folder, to the existing
+# Direct Upload Pages project "srikanthtallapaneni" (srikanthtallapaneni.pages.dev).
+# Needs two repository secrets: CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
 
 on:
   push:
@@ -7,15 +11,13 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,17 +27,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
         with:
-          path: build
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy build --project-name=srikanthtallapaneni --branch=main
