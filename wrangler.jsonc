@@ -6,7 +6,7 @@
 	"compatibility_date": "2025-09-27",
 	"d1_databases": [
 		{
-			"binding": "portfolio_resume",
+			"binding": "DB",
 			"database_name": "portfolio-resume",
 			"database_id": "4f3640a3-d134-4eba-a364-570e6e595bdc"
 		}
