@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import content from './content.js';
 
 // Animated components from React Bits (https://reactbits.dev)
@@ -11,6 +11,8 @@ import ScrollVelocity from './reactbits/ScrollVelocity.jsx';
 import SpotlightCard from './reactbits/SpotlightCard.jsx';
 import AnimatedContent from './reactbits/AnimatedContent.jsx';
 import ScrollReveal from './reactbits/ScrollReveal.jsx';
+import ResumeModal from './ResumeModal.jsx';
+import './modal.css';
 
 const ACCENT = '#c9f26c';
 
@@ -68,7 +70,7 @@ function Nav() {
   );
 }
 
-function Hero() {
+function Hero({ onResume }) {
   const { hero, links, meta, stats } = content;
   return (
     <section className="hero wrap" id="top">
@@ -91,7 +93,9 @@ function Hero() {
               <Magnet padding={50} magnetStrength={6}>
                 <a className="btn btn-accent" href="#work">See my work <span aria-hidden="true">↓</span></a>
               </Magnet>
-              {links.resume && <Ext href={links.resume} className="btn">Resume</Ext>}
+              {content.resumeForm && (
+                <button type="button" className="btn" onClick={onResume}>Resume <span aria-hidden="true">↓</span></button>
+              )}
               {links.linkedin && <Ext href={links.linkedin} className="btn">LinkedIn</Ext>}
               {links.github && <Ext href={links.github} className="btn">GitHub</Ext>}
             </div>
@@ -252,25 +256,100 @@ function Journey() {
   );
 }
 
-function Contact() {
+const Icon = {
+  mail: (
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" />
+    </svg>
+  ),
+  pdf: (
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5" /><path d="M9 13h6M9 17h4" />
+    </svg>
+  ),
+  copy: (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="9" y="9" width="12" height="12" rx="2" /><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" />
+    </svg>
+  ),
+  check: (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="m5 12 5 5 9-10" />
+    </svg>
+  ),
+  linkedin: (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18" rx="2" /><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7" />
+    </svg>
+  ),
+  github: (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21" />
+    </svg>
+  ),
+};
+
+function CopyEmail({ email }) {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      window.location.href = `mailto:${email}`;
+    }
+  };
+  return (
+    <div className="contact-email">
+      <span>{email}</span>
+      <button type="button" className="copy-btn" onClick={copy} aria-label={copied ? 'Email copied' : 'Copy email address'}>
+        {copied ? Icon.check : Icon.copy}
+      </button>
+      <span className="sr-only" aria-live="polite">{copied ? 'Copied to clipboard' : ''}</span>
+    </div>
+  );
+}
+
+function Contact({ onResume }) {
   const { contact, links, meta } = content;
   return (
     <section className="contact wrap" id="contact" aria-labelledby="contact-title">
       <Reveal className="contact-card">
+        <p className="kicker">{contact.eyebrow}</p>
         <h2 id="contact-title">
           {contact.heading}{' '}
           <em><ShinyText text={contact.headingAccent} color={ACCENT} shineColor="#ffffff" speed={2.5} /></em>
         </h2>
         <p className="lead">{contact.lead}</p>
-        <div className="actions">
-          {links.linkedin && (
-            <Magnet padding={60} magnetStrength={5}>
-              <Ext href={links.linkedin} className="btn btn-accent">Connect on LinkedIn</Ext>
+        <div className="contact-actions">
+          {links.email && (
+            <Magnet padding={60} magnetStrength={6}>
+              <a className="cta cta-accent" href={`mailto:${links.email}`}>
+                {Icon.mail}<span>Email me</span><span className="cta-arrow" aria-hidden="true">↗</span>
+              </a>
             </Magnet>
           )}
-          {links.email && <a className="btn" href={`mailto:${links.email}`}>Email me</a>}
-          {links.github && <Ext href={links.github} className="btn">GitHub</Ext>}
-          {links.resume && <Ext href={links.resume} className="btn">Resume</Ext>}
+          {content.resumeForm && (
+            <Magnet padding={60} magnetStrength={6}>
+              <button type="button" className="cta" onClick={onResume}>
+                {Icon.pdf}<span>Get my resume</span><span className="cta-arrow" aria-hidden="true">↗</span>
+              </button>
+            </Magnet>
+          )}
+        </div>
+        {links.email && <CopyEmail email={links.email} />}
+        <div className="contact-socials">
+          {links.linkedin && (
+            <a href={links.linkedin} target="_blank" rel="noopener noreferrer">
+              {Icon.linkedin}<span>LinkedIn</span><span className="cta-arrow" aria-hidden="true">↗</span>
+            </a>
+          )}
+          {links.github && (
+            <a href={links.github} target="_blank" rel="noopener noreferrer">
+              {Icon.github}<span>GitHub</span><span className="cta-arrow" aria-hidden="true">↗</span>
+            </a>
+          )}
         </div>
       </Reveal>
       <footer className="footer">
@@ -282,6 +361,8 @@ function Contact() {
 }
 
 export default function App() {
+  const [resumeOpen, setResumeOpen] = useState(false);
+  const openResume = () => setResumeOpen(true);
   useEffect(() => {
     document.title = content.meta.title;
   }, []);
@@ -290,14 +371,22 @@ export default function App() {
       <a className="skip" href="#main">Skip to content</a>
       <Nav />
       <main id="main">
-        <Hero />
+        <Hero onResume={openResume} />
         <Marquee />
         <Work />
         <About />
         <Stack />
         <Journey />
-        <Contact />
+        <Contact onResume={openResume} />
       </main>
+      {content.resumeForm && (
+        <ResumeModal
+          open={resumeOpen}
+          onClose={() => setResumeOpen(false)}
+          copy={content.resumeForm}
+          endpoint={content.resumeForm.endpoint}
+        />
+      )}
     </>
   );
 }

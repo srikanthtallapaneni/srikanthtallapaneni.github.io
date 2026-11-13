@@ -76,6 +76,8 @@ h3 { font-family: var(--display); font-weight: 600; font-size: 24px; line-height
   font-size: 15px; font-weight: 600; background: var(--surface-2); color: var(--text);
   box-shadow: inset 0 0 0 1px var(--line); transition: background .15s, box-shadow .15s;
 }
+button.btn { border: 0; cursor: pointer; font-family: inherit; }
+button.cta { border: 0; cursor: pointer; text-align: left; }
 .btn:hover { box-shadow: inset 0 0 0 1px var(--muted); }
 .btn-accent { background: var(--accent); color: var(--accent-ink); box-shadow: none; }
 .btn-accent:hover { background: #d8fb84; box-shadow: none; }
@@ -163,9 +165,32 @@ h3 { font-family: var(--display); font-weight: 600; font-size: 24px; line-height
 /* ---------- Contact ---------- */
 .contact { padding: 120px 20px 28px; }
 .contact-card { padding: clamp(36px, 7vw, 88px); border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); text-align: center; }
-.contact-card h2 { font-size: clamp(64px, 14vw, 180px); margin: 0; }
-.contact-card .lead { margin: 20px auto 30px; }
-.contact-card .actions { justify-content: center; }
+.contact-card h2 { font-size: clamp(46px, 9vw, 128px); line-height: 0.98; margin: 0 auto; max-width: 12ch; }
+.contact-card .kicker { margin-bottom: 18px; }
+.contact-card .kicker::before { content: none; }
+.contact-card .lead { margin: 24px auto 40px; }
+.contact-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
+.cta {
+  display: flex; align-items: center; gap: 14px; min-width: 300px; padding: 22px 28px; border-radius: 22px;
+  font-family: var(--display); font-size: 20px; font-weight: 600; letter-spacing: -0.01em;
+  background: var(--surface-2); color: var(--text); box-shadow: inset 0 0 0 1px var(--line);
+  transition: background .15s, box-shadow .15s, transform .15s;
+}
+.cta:hover { box-shadow: inset 0 0 0 1px var(--muted); }
+.cta-accent { background: var(--accent); color: var(--accent-ink); box-shadow: none; }
+.cta-accent:hover { background: #d8fb84; box-shadow: none; }
+.cta-arrow { margin-left: auto; padding-left: 24px; font-size: 0.9em; opacity: 0.8; }
+.contact-email { display: inline-flex; align-items: center; gap: 12px; margin-top: 30px; color: var(--muted); font-size: 16px; }
+.copy-btn {
+  display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; border: 0; cursor: pointer;
+  background: transparent; color: var(--muted); box-shadow: inset 0 0 0 1px var(--line); transition: color .15s, box-shadow .15s;
+}
+.copy-btn:hover { color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.copy-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.contact-socials { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 32px; margin-top: 44px; }
+.contact-socials a { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: var(--muted); transition: color .15s; }
+.contact-socials a:hover { color: var(--text); }
+.contact-socials .cta-arrow { padding-left: 2px; color: var(--accent); }
 .footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 24px 8px 0; color: var(--dim); font-size: 14px; }
 .footer a:hover { color: var(--text); }
 
@@ -193,6 +218,9 @@ h3 { font-family: var(--display); font-weight: 600; font-size: 24px; line-height
   .wrap { padding-inline: 12px; }
   .section { padding: 84px 12px 0; }
   .contact { padding: 84px 12px 24px; }
+  .contact-actions { flex-direction: column; align-items: stretch; }
+  .cta { min-width: 0; width: 100%; padding: 18px 22px; font-size: 18px; }
+  .contact-email { font-size: 14.5px; }
   :root { --radius: 22px; }
   .nav-links a { padding: 8px 7px; font-size: 12.5px; }
   .nav-cta { padding: 8px 11px; font-size: 12.5px; }

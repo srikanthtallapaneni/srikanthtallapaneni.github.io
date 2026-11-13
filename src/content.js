@@ -18,9 +18,8 @@ const content = {
 
   links: {
     linkedin: "https://www.linkedin.com/in/srikanthchowdaritallapaneni/",
-    github: "", // personal GitHub profile URL — leave empty to hide the button
-    resume: "", // e.g. "assets/resume.pdf" — leave empty to hide the button
-    email: "", // leave empty to hide
+    github: "https://github.com/srikanthtallapaneni", // personal GitHub profile URL — leave empty to hide the button
+    email: "srikanth.tallapaneni@gmail.com", // leave empty to hide
   },
 
   hero: {
@@ -89,7 +88,7 @@ const content = {
     headingAccent: "reliability first.",
     paragraphs: [
       "I’m a Software Engineer at IBM working on the Environmental Intelligence Suite — the platform enterprises use to monitor, predict and respond to weather and climate impact.",
-      "My work spans backend services, geospatial data ingestion, caching and resilience. I architected an error framework that sped up root cause analysis, built automated failover across three geographically diverse data centers, and cut query times by more than 90% with caching on IBM Cloud.",
+      "I lead the UI development team in Angular, and my work spans micro-frontends, backend services, geospatial data ingestion, caching and resilience. I built PowerXplain, which turns numerical data into natural-language text with Watson Orchestration, architected an error framework that sped up root cause analysis, built automated failover across three geographically diverse data centers, and cut query times by more than 90% with caching on IBM Cloud.",
       "Before IBM, I built micro-frontends and reusable Angular component libraries at CGI for a banking collections platform, along with real-time WebSocket communication, multilingual localization and API caching with Hazelcast.",
     ],
     facts: [
@@ -150,15 +149,18 @@ const content = {
         start: "Nov 2023",
         end: "Present",
         current: true,
-        context: "Environmental Intelligence · Geospatial data, resilience and performance",
+        context: "Environmental Intelligence · UI team lead, geospatial data, resilience and performance",
         bullets: [
+          "Lead the UI development team, using Angular as the framework.",
+          "Created shared libraries published to a private NPM registry, and built micro-frontend web components with Angular Elements, with dynamic inputs and custom validation through Reactive Forms.",
           "Architected a robust error framework that enabled faster root cause analysis; the findings let the team fix the three biggest causes of crashes and improve application performance by 25%.",
           "Used AWS S3 cloud object storage to ingest and retrieve COG files, enabling real-time processing and API-based streaming of geospatial data.",
           "Pioneered automated failover across three geographically diverse data centers, shielding critical applications from disruption and ensuring uninterrupted service for 5,000+ users.",
           "Delivered 15+ code contributions to IBM’s Environmental Intelligence open-source GitHub project, supporting scalable environmental data solutions.",
           "Implemented a caching mechanism on IBM Cloud that reduced query time by more than 90% without increasing costs.",
+          "Implemented PowerXplain, one of the most important features in the application, which converts numerical data into natural-language text using Watson Orchestration.",
         ],
-        stack: ["Spring Boot", "AWS S3", "IBM Cloud", "PostgreSQL", "MongoDB", "React", "Node.js"],
+        stack: ["Angular", "Spring Boot", "AWS S3", "IBM Cloud", "Watson Orchestration", "PostgreSQL", "MongoDB", "React", "Node.js"],
         impact: ["25% performance improvement", "90%+ faster queries", "5,000+ users kept online", "15+ open-source contributions"],
         link: { label: "Environmental Intelligence on GitHub", url: "https://github.com/IBM/Environmental-Intelligence" },
       },
@@ -166,7 +168,7 @@ const content = {
         company: "CGI",
         title: "Software Engineer",
         location: "India",
-        start: "Dec 2020",
+        start: "Sep 2020",
         end: "Nov 2023",
         context: "CGI Information Systems and Management · Banking collections platform",
         bullets: [
@@ -189,11 +191,22 @@ const content = {
     },
   },
 
+  // "Get my resume" form. The PDF itself lives in public/private/resume.pdf and is only served
+  // by the Cloudflare Pages function in functions/api/resume after this form is sent. Remove this block to hide the buttons.
+  resumeForm: {
+    endpoint: "/api/resume/request",
+    eyebrow: "Private access",
+    heading: "Get my resume",
+    intro: "Resume updated November 2026. Share a few professional details and the download starts right away.",
+    privacy: "Your details are only used to know who requested my resume. They are never shared.",
+    success: "Thanks! Your download should have started. If it didn’t, close this and try again.",
+  },
+
   contact: {
     eyebrow: "Contact",
-    heading: "Let’s",
-    headingAccent: "talk.",
-    lead: "The quickest way to reach me is LinkedIn.",
+    heading: "Let’s build systems",
+    headingAccent: "that last.",
+    lead: "Let’s talk about UI leadership, scalable platforms, and your next technical challenge.",
   },
 };
 

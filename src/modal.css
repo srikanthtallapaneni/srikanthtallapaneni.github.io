@@ -1,0 +1,54 @@
+/* ---------- Resume request modal ---------- */
+.resume-modal {
+  width: min(680px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); padding: 0; margin: auto;
+  border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--text);
+  overflow: auto;
+}
+.resume-modal::backdrop { background: rgba(8, 8, 6, 0.72); backdrop-filter: blur(6px); }
+.resume-modal[open] { animation: modal-in .22s ease-out; }
+@keyframes modal-in { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .resume-modal[open] { animation: none; } }
+.resume-modal-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 32px 36px 24px; border-bottom: 1px solid var(--line); }
+.resume-modal-head .kicker::before { content: none; }
+.resume-modal-head .kicker { color: var(--accent); }
+.resume-modal-head h2 { font-size: clamp(34px, 5vw, 52px); margin-top: 6px; }
+.modal-close {
+  flex: none; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; border: 0; cursor: pointer;
+  background: var(--surface-2); color: var(--text); box-shadow: inset 0 0 0 1px var(--line); transition: box-shadow .15s;
+}
+.modal-close:hover { box-shadow: inset 0 0 0 1px var(--muted); }
+.resume-modal-body { padding: 26px 36px 32px; }
+.resume-intro { color: var(--muted); font-size: 16px; margin-bottom: 24px; }
+.field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.field-wide { grid-column: 1 / -1; }
+.field { display: flex; flex-direction: column; gap: 8px; font-size: 14px; font-weight: 600; }
+.field > span { display: flex; justify-content: space-between; }
+.field i { color: var(--accent); font-style: normal; }
+.field input, .field textarea {
+  width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--line); background: var(--bg);
+  color: var(--text); font: inherit; font-weight: 400; font-size: 15.5px; transition: border-color .15s;
+}
+.field textarea { resize: vertical; min-height: 110px; }
+.field input::placeholder { color: var(--dim); }
+.field input:focus, .field textarea:focus { outline: none; border-color: var(--accent); }
+.field-count { align-self: flex-end; color: var(--dim); font-weight: 400; font-size: 12.5px; }
+.field-more { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
+.field-more summary { cursor: pointer; font-family: var(--display); font-weight: 600; font-size: 17px; }
+.field-more summary small { margin-left: 10px; font-family: var(--sans); font-weight: 400; font-size: 13px; color: var(--dim); }
+.field-more[open] summary { margin-bottom: 18px; }
+.field-more .field + .field { margin-top: 18px; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.resume-privacy { margin-top: 24px; padding: 14px 18px; border-radius: 14px; background: var(--surface-2); color: var(--muted); font-size: 13.5px; }
+.resume-error { margin-top: 14px; color: #ff9b8a; font-size: 14px; }
+.resume-done { color: var(--text); font-size: 17px; }
+.resume-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+.resume-actions .cta { min-width: 0; padding: 16px 24px; font-size: 17px; cursor: pointer; border: 0; }
+.resume-actions .cta-accent { min-width: 200px; }
+.resume-actions .cta[disabled] { opacity: .7; cursor: progress; }
+@media (max-width: 640px) {
+  .resume-modal-head { padding: 24px 22px 18px; }
+  .resume-modal-body { padding: 20px 22px 24px; }
+  .field-grid { grid-template-columns: 1fr; }
+  .resume-actions { flex-direction: column-reverse; }
+  .resume-actions .cta, .resume-actions .cta-accent { width: 100%; justify-content: center; }
+}

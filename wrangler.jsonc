@@ -1,10 +1,15 @@
-// Cloudflare Workers config: serves the built site (the build/ folder) as static assets.
-// Cloudflare build settings: build command `npm run build`, deploy command `npx wrangler deploy`.
+// Cloudflare Pages config. The site is the build/ folder; server code is in functions/.
+// Cloudflare Pages build settings: build command `npm run build`, output directory `build`.
 {
-  "name": "srikanthchowdaritallapaneni",
-  "compatibility_date": "2025-09-27",
-  "assets": {
-    "directory": "./build",
-    "not_found_handling": "single-page-application"
-  }
+	"name": "srikanthtallapaneni",
+	"pages_build_output_dir": "./build",
+	"compatibility_date": "2025-09-27",
+	"d1_databases": [
+		{
+			"binding": "portfolio_resume",
+			"database_name": "portfolio-resume",
+			"database_id": "4f3640a3-d134-4eba-a364-570e6e595bdc"
+		}
+	]
+	// Secrets (set in the Pages project, never in git): RESUME_SECRET and ADMIN_KEY
 }
